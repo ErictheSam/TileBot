@@ -1,0 +1,46 @@
+datasets:
+    name: 'wireframe'
+    input_size: 512
+
+model:
+    model_name: 'mobilev2_mlsd_large'
+    with_deconv: True
+
+
+train:
+    save_dir:  './workdir/models/mobilev2_mlsd_large_512_bsize24/'
+    img_dir:  "./mlsd_pytorch/data/wireframe_raw/images_raw"
+    label_fn: "./mlsd_pytorch/data/wireframe_raw/train.json"
+    num_train_epochs: 600
+    batch_size: 24
+    learning_rate: 0.003
+    use_step_lr_policy: True
+    weight_decay: 0.000001
+    load_from: ""
+    warmup_steps: 100
+    milestones: [200, 400]
+    milestones_in_epo: True
+    lr_decay_gamma: 0.5
+
+    data_cache_dir: "./mlsd_pytorch/data/wireframe_cache/"
+    with_cache: False
+    cache_to_mem: False
+val:
+    img_dir: "./mlsd_pytorch/data/wireframe_raw/images_raw/"
+    label_fn: "./mlsd_pytorch/data/wireframe_raw/valid.json"
+    batch_size: 64
+    val_after_epoch: 50
+ 
+loss:
+    loss_weight_dict_list: [{ 'tp_center_loss': 5.0, 'tp_angle_loss': 2.0, 'tp_displacement_loss': 5.0, 'tp_centerless_loss': 2.0,'tp_match_loss': 5.0, 'sol_center_loss': 2.5, 'sol_angle_loss': 1.0, 'sol_displacement_loss': 2.5, 'sol_match_loss': 2.5, 'sol_centerless_loss': 1.0}]
+    
+    with_match_loss: True
+    with_focal_loss: True
+    focal_loss_level: 0
+    with_sol_loss: True
+    match_sap_thresh: 20.0
+
+decode:
+    score_thresh: 0.10
+    len_thresh: 20
+    top_k: 200
